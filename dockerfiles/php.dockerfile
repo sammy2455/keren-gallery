@@ -43,6 +43,13 @@ RUN mkdir -p /home/$user/.composer && chown -R $user:$user /home/$user
 RUN apt-get update && apt-get -y install sudo
 RUN echo "$user:$user" | chpasswd && adduser $user sudo
 
+# Install package for image optimizer
+RUN sudo apt-get install jpegoptim -y
+RUN sudo apt-get install optipng -y
+RUN sudo apt-get install pngquant -y
+RUN sudo apt-get install gifsicle -y
+RUN sudo apt-get install webp -y
+
 # Set working directory
 WORKDIR /var/www
 USER $user
