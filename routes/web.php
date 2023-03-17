@@ -13,6 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return null;
+Route::group(['prefix' => 'image', 'namespace' => 'App\Http\Controllers\Image', 'as' => 'image.'], function ($router) {
+    Route::get('/{id}', 'ShowController')->name('show');
 });

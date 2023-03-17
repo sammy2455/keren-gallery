@@ -59,28 +59,14 @@ services:
       - keren
 
   nginx:
-    image: nginx:alpine
+    image: byjg/nginx-extras
     container_name: keren-nginx
     restart: unless-stopped
     ports:
       - "8800:80"
     volumes:
       - ./:/var/www
-      - ./dockerfiles/nginx:/etc/nginx/conf.d
-    networks:
-      - keren
-    depends_on:
-      - php
-
-  keren:
-    image: nginx:alpine
-    container_name: keren-gallery
-    restart: unless-stopped
-    ports:
-      - "9900:80"
-    volumes:
-      - ./dockerfiles/keren/keren.conf:/etc/nginx/nginx.conf
-      - ./files:/usr/share/nginx/html
+      - ./dockerfiles/nginx/nginx.conf:/etc/nginx/nginx.conf
     networks:
       - keren
     depends_on:

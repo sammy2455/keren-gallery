@@ -21,7 +21,8 @@ Route::group(['prefix' => 'v1'], function ($router) {
         Route::post('/me', 'MeController')->name('me')->middleware('auth:sanctum');
     });
 
-    Route::group(['prefix' => 'media', 'namespace' => 'App\Http\Controllers\Media', 'as' => 'media.'], function ($router) {
+    Route::group(['prefix' => 'image', 'namespace' => 'App\Http\Controllers\Image', 'as' => 'image.'], function ($router) {
         Route::post('/upload', 'UploadController')->name('upload')->middleware('auth:sanctum');
+        Route::delete('/{id}', 'DeleteController')->name('delete')->middleware('auth:sanctum');
     });
 });
