@@ -36,6 +36,8 @@ sudo docker compose exec php php artisan migrate:refresh --seed
 
 3. Upload the image you want to host on the server:
 
+**Para poder subir una imagen, es necesario _autenticarse_ y obtener el token correspondiente.**
+
 ```bash
 curl -F 'image=@/path/to/your/image.jpg' http://localhost:8800/api/v1/image/upload
 ```
