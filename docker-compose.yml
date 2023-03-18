@@ -59,7 +59,7 @@ services:
       - keren
 
   nginx:
-    image: byjg/nginx-extras
+    image: nginx:latest
     container_name: keren-nginx
     restart: unless-stopped
     ports:
