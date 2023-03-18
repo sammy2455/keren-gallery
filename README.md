@@ -36,7 +36,7 @@ sudo docker compose exec php php artisan migrate:refresh --seed
 
 3. Upload the image you want to host on the server:
 
-**To upload an image, it is necessary to [_authenticate_](#auth) and obtain the corresponding token.**
+**To upload an image, it is necessary to [_authenticate_](#authentication) and obtain the corresponding token.**
 
 ```bash
 curl -F 'image=@/path/to/your/image.jpg' http://localhost:8800/api/v1/image/upload
@@ -56,7 +56,6 @@ curl -F 'image=@/path/to/your/image.jpg' http://localhost:8800/api/v1/image/uplo
 5. Use the link you prefer to insert the image into your project.
 
 
-<a name="auth"></a>
 ### Authentication 
 
 ## License
