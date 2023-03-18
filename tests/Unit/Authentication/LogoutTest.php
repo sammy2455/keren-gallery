@@ -39,7 +39,7 @@ class LogoutTest extends TestCase
     {
         $this->seed(UserSeeder::class);
 
-        $user = User::where('email', "john.doe@email.com")->firstOrFail();
+        $user = User::where('email', "sammy@email.com")->firstOrFail();
 
         return $user->createToken('auth_token')->plainTextToken;
     }

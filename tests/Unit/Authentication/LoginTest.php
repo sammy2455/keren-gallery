@@ -18,7 +18,7 @@ class LoginTest extends TestCase
 
         // action
         $response = $this->postJson(route('authentication.login'), [
-            "email" => "john.doe@email.com",
+            "email" => "sammy@email.com",
             "password" => "password",
         ]);
 
