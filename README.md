@@ -57,6 +57,23 @@ curl -F 'image=@/path/to/your/image.jpg' http://localhost:8800/api/v1/image/uplo
 
 
 ### Authentication 
+During the execution of the seed, a user is registered with the e-mail address "sammy@email.com" and the password "password". You can authenticate yourself using the following link:
+
+```
+http://localhost:8800/api/v1/auth/login
+```
+
+return:
+
+```json
+{
+    "success": true,
+    "token": "e056ec29-6dca-4e8f-b997-7751fd2615b8|JAJgJTZxsruV9wMHrOtDCllneh4wAWmQF4roWStL",
+    "token_type": "bearer",
+    "expires_in": 10080
+}
+```
+
 
 ## License
 
