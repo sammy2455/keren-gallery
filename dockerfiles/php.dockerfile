@@ -51,5 +51,5 @@ RUN sudo apt-get install gifsicle -y
 RUN sudo apt-get install webp -y
 
 # Set working directory
-WORKDIR /var/www
+WORKDIR /var/www/html
 USER $user

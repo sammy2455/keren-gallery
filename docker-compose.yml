@@ -1,80 +1,102 @@
-version: "3.7"
-
-services:
-  php:
-    build:
-      args:
-        user: sammy
-        uid: 1000
-      context: .
-      dockerfile: dockerfiles/php.dockerfile
-    image: keren-php
-    container_name: keren-php
-    user: 'sammy'
-    restart: unless-stopped
-    working_dir: /var/www/
-    volumes:
-      - ./:/var/www/
-    networks:
-      - keren
-    depends_on:
-      - redis
-      - mysql
-
-  queue:
-    image: keren-php
-    container_name: keren-queue
-    restart: always
-    working_dir: /var/www/
-    command: php artisan queue:work
-    depends_on:
-      - php
-    volumes:
-      - ./:/var/www
-    networks:
-      - keren
-
-  redis:
-    container_name: keren-redis
-    image: redis:7.0
-    volumes:
-      - redis:/data
-    networks:
-      - keren
-
-  mysql:
-    image: mariadb:latest
-    container_name: keren-mysql
-    restart: unless-stopped
-    environment:
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-      MYSQL_USER: ${DB_USERNAME}
-    volumes:
-      - ./dockerfiles/mysql:/var/lib/mysql
-    networks:
-      - keren
-
-  nginx:
-    image: nginx:latest
-    container_name: keren-nginx
-    restart: unless-stopped
-    ports:
-      - "8800:80"
-    volumes:
-      - ./:/var/www
-      - ./dockerfiles/nginx/nginx.conf:/etc/nginx/nginx.conf
-    networks:
-      - keren
-    depends_on:
-      - php
-
-volumes:
-  redis:
-    name: keren-redis
-    driver: "local"
+version: '3.8'
 
 networks:
-  keren:
-    driver: bridge
+    keren:
+        name: keren-network
+        driver: bridge
+
+services:
+    nginx:
+        image: nginx:latest
+        container_name: keren-nginx
+        restart: unless-stopped
+        ports:
+            - "8800:80"
+        volumes:
+            - ./src:/var/www/html
+            - ./dockerfiles/nginx/nginx.conf:/etc/nginx/nginx.conf
+        depends_on:
+            - php
+            - redis
+            - mysql
+        networks:
+            - keren
+
+    mysql:
+        image: mariadb:10.11.2
+        container_name: keren-mysql
+        volumes:
+            - ./mysql:/var/lib/mysql
+        restart: unless-stopped
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_DATABASE: keren
+            MYSQL_USER: sammy
+            MYSQL_PASSWORD: root
+            MYSQL_ROOT_PASSWORD: root
+            SERVICE_TAGS: dev
+            SERVICE_NAME: mysql
+        networks:
+            - keren
+
+    redis:
+        image: redis:7.0-alpine
+        container_name: keren-redis
+        restart: unless-stopped
+        ports:
+            - "6379:6379"
+        networks:
+            - keren
+
+    php:
+        image: keren/php
+        build:
+          context: ./dockerfiles
+          dockerfile: php.dockerfile
+          args:
+              user: sammy
+              uid: 1000
+        container_name: keren-php
+        restart: unless-stopped
+        volumes:
+          - ./src:/var/www/html
+        networks:
+          - keren
+
+    composer:
+        image: keren/composer
+        build:
+            context: ./dockerfiles
+            dockerfile: composer.dockerfile
+            args:
+                - UID=${UID:-1000}
+                - GID=${GID:-1000}
+        container_name: keren-composer
+        volumes:
+            - ./src:/var/www/html
+        working_dir: /var/www/html
+        depends_on:
+            - php
+        user: laravel
+        entrypoint: [ 'composer', '--ignore-platform-reqs' ]
+        networks:
+            - keren
+
+    artisan:
+        image: keren/artisan
+        build:
+            context: ./dockerfiles
+            dockerfile: php.dockerfile
+            args:
+                user: sammy
+                uid: 1000
+        container_name: keren-artisan
+        volumes:
+            - ./src:/var/www/html
+        depends_on:
+            - mysql
+        working_dir: /var/www/html
+        entrypoint: [ 'php', '/var/www/html/artisan' ]
+        networks:
+            - keren
